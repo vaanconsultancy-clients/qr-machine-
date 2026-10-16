@@ -794,14 +794,18 @@ async function renderPoster(tableNumber){
   ctx.stroke();
   cursorY += 36;
 
-  /* table number */
+   /* table number — BIG */
   const tableLabel = $('tableLabel').value.trim() || 'TABLE';
   ctx.fillStyle = '#8A6A00';
-  ctx.font = '700 22px Cinzel, serif';
+  ctx.font = '800 46px Cinzel, serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
-  ctx.fillText((tableLabel + '   ' + tableNumber).toUpperCase(), POSTER_W / 2, cursorY);
-  cursorY += 48;
+  ctx.fillText((tableLabel).toUpperCase(), POSTER_W / 2, cursorY);
+  cursorY += 56;
+  ctx.fillStyle = '#1B3A6B';
+  ctx.font = '800 96px Cinzel, serif';
+  ctx.fillText(tableNumber, POSTER_W / 2, cursorY);
+  cursorY += 116;
 
   /* pills */
   const pill1 = $('pill1').value.trim();
