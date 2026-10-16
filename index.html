@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<meta name="theme-color" content="#1B3A6B" />
+<title>QR Poster Studio — VAAN</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+:root{
+  --navy:#1B3A6B;
+  --navy-dark:#142C52;
+  --navy-soft:#2A4F8A;
+  --gold:#F2C200;
+  --red:#D62828;
+  --cream:#FBF6EC;
+  --cream-2:#F5EDDC;
+  --ink:#1A1A2E;
+  --ink-soft:#4A4A5E;
+  --green:#1E7A3A;
+  --shadow-lg:0 24px 60px -20px rgba(27,58,107,.45);
+  --shadow-md:0 12px 32px -14px rgba(27,58,107,.35);
+  --shadow-sm:0 6px 18px -10px rgba(27,58,107,.30);
+}
+*{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html{ scroll-behavior:smooth; }
+body{
+  font-family:'Inter', system-ui, -apple-system, sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100dvh;
+  line-height:1.5;
+  padding-bottom:40px;
+}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+  color:var(--cream);
+  padding:16px 18px;
+  box-shadow:var(--shadow-md);
+  position:sticky; top:0; z-index:40;
+  display:flex; align-items:center; gap:12px;
+}
+.header .logo-mark{
+  flex:0 0 auto;
+  width:36px; height:36px; border-radius:10px;
+  background:rgba(242,194,0,.15); color:var(--gold);
+  border:1px solid rgba(242,194,0,.35);
+  display:grid; place-items:center;
+  font-family:'Cinzel',serif;
+  font-weight:800;
+  font-size:15px;
+}
+.header .h-title{ flex:1; min-width:0; }
+.header .h-title h1{
+  font-family:'Cinzel',serif;
+  font-size:16px; font-weight:800;
+  letter-spacing:.03em;
+  color:var(--gold);
+}
+.header .h-title p{
+  font-size:11px;
+  color:rgba(251,246,236,.7);
+  margin-top:2px;
+}
+
+/* LAYOUT */
+.wrap{
+  max-width:1200px; margin:0 auto;
+  padding:18px 14px 40px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+}
+@media(min-width:900px){
+  .wrap{ grid-template-columns:400px 1fr; gap:22px; align-items:start; }
+}
+
+/* PANEL */
+.panel{
+  background:#fff;
+  border:1.5px solid rgba(27,58,107,.10);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:var(--shadow-sm);
+  margin-bottom:14px;
+}
+.panel-title{
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  font-size:13.5px;
+  color:var(--navy);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  display:flex; align-items:center; gap:8px;
+}
+.panel-title .num{
+  display:inline-grid; place-items:center;
+  width:24px; height:24px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+  color:var(--gold);
+  font-family:'Cinzel',serif;
+  font-size:12px;
+  font-weight:800;
+}
+.field{ margin-bottom:14px; }
+.field:last-child{ margin-bottom:0; }
+.field label{
+  display:block;
+  font-size:11.5px; font-weight:600;
+  color:var(--ink-soft);
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.field input[type="text"],
+.field input[type="url"],
+.field input[type="number"],
+.field select,
+.field textarea{
+  width:100%;
+  padding:12px 14px;
+  border:1.5px solid rgba(27,58,107,.20);
+  border-radius:12px;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  background:#fff;
+  color:var(--ink);
+  outline:none;
+  transition:border-color .25s;
+}
+.field input:focus, .field select:focus, .field textarea:focus{
+  border-color:var(--gold);
+}
+.field .hint{
+  margin-top:5px;
+  font-size:11px;
+  color:var(--ink-soft);
+  opacity:.8;
+}
+.field-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.field-row-3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+}
+
+/* client selector */
+.client-list{
+  display:flex; flex-direction:column; gap:8px;
+}
+.client-btn{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  border:1.5px solid rgba(27,58,107,.15);
+  border-radius:12px;
+  background:#fff;
+  cursor:pointer;
+  transition:all .2s;
+  text-align:left;
+}
+.client-btn:hover{ border-color:var(--gold); }
+.client-btn.selected{
+  border-color:var(--gold);
+  background:linear-gradient(135deg,rgba(242,194,0,.10),rgba(242,194,0,.02));
+  box-shadow:0 0 0 3px rgba(242,194,0,.20);
+}
+.client-btn .cl-logo{
+  flex:0 0 auto;
+  width:34px; height:34px;
+  border-radius:8px;
+  object-fit:contain;
+  background:rgba(27,58,107,.05);
+}
+.client-btn .cl-body{ flex:1; min-width:0; }
+.client-btn .cl-name{
+  font-weight:700;
+  font-size:13px;
+  color:var(--navy);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.client-btn .cl-url{
+  font-size:10.5px;
+  color:var(--ink-soft);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  margin-top:1px;
+}
+
+/* bg grid */
+.bg-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:8px;
+  margin-top:6px;
+}
+.bg-option{
+  aspect-ratio:9/16;
+  border-radius:10px;
+  border:2.5px solid transparent;
+  background-size:cover;
+  background-position:center;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:transform .2s, border-color .25s;
+}
+.bg-option:hover{ transform:translateY(-2px); }
+.bg-option.selected{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(242,194,0,.30);
+}
+.bg-option::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 60%, rgba(0,0,0,.6));
+}
+.bg-option .bg-name{
+  position:absolute; bottom:4px; left:6px;
+  font-size:9.5px; font-weight:700;
+  color:#fff;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+  z-index:1;
+}
+.bg-upload-btn{
+  display:flex; align-items:center; justify-content:center;
+  gap:6px;
+  padding:12px;
+  border:1.5px dashed rgba(27,58,107,.35);
+  border-radius:12px;
+  background:rgba(242,194,0,.06);
+  color:var(--navy);
+  font-weight:600;
+  font-size:12.5px;
+  cursor:pointer;
+  transition:all .2s;
+  margin-top:8px;
+}
+.bg-upload-btn:hover{ background:rgba(242,194,0,.12); border-color:var(--gold); }
+.bg-upload-btn input{ display:none; }
+
+/* toggle */
+.toggle-row{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 0;
+  font-size:12.5px;
+  color:var(--ink-soft);
+}
+.toggle-switch{
+  position:relative;
+  width:44px; height:24px;
+  background:rgba(27,58,107,.20);
+  border-radius:999px;
+  cursor:pointer;
+  transition:background .25s;
+  flex:0 0 auto;
+}
+.toggle-switch::after{
+  content:"";
+  position:absolute;
+  width:18px; height:18px;
+  background:#fff;
+  border-radius:50%;
+  top:3px; left:3px;
+  transition:transform .25s;
+  box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+.toggle-switch.on{ background:var(--green); }
+.toggle-switch.on::after{ transform:translateX(20px); }
+
+/* buttons */
+.btn{
+  display:flex; align-items:center; justify-content:center;
+  gap:8px;
+  padding:14px 18px;
+  border-radius:12px;
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  cursor:pointer;
+  border:none;
+  transition:transform .2s;
+  width:100%;
+  text-decoration:none;
+}
+.btn:active{ transform:scale(.98); }
+.btn-primary{
+  background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+  color:var(--gold);
+  box-shadow:var(--shadow-sm);
+}
+.btn-primary:disabled{ opacity:.5; cursor:not-allowed; }
+.btn-success{
+  background:linear-gradient(135deg,var(--green),#0F5A28);
+  color:#fff;
+  box-shadow:var(--shadow-sm);
+}
+.btn-ghost{
+  background:transparent;
+  color:var(--navy);
+  border:1.5px solid rgba(27,58,107,.25);
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  text-transform:none;
+  letter-spacing:.02em;
+  font-size:13px;
+}
+.btn-group{
+  display:flex; flex-direction:column; gap:10px;
+  margin-top:10px;
+}
+
+/* bulk */
+.bulk-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  align-items:end;
+  margin-bottom:12px;
+}
+
+/* preview */
+.preview-wrap{
+  background:#fff;
+  border:1.5px solid rgba(27,58,107,.10);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:var(--shadow-sm);
+  position:sticky; top:96px;
+}
+@media(max-width:899px){
+  .preview-wrap{ position:static; }
+}
+.preview-title{
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  font-size:13.5px;
+  color:var(--navy);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  text-align:center;
+}
+.preview-stage{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:8px 0;
+}
+#posterCanvas{
+  max-width:100%;
+  height:auto;
+  max-height:78dvh;
+  display:block;
+  border-radius:10px;
+  box-shadow:0 12px 32px -12px rgba(27,58,107,.5);
+  border:1px solid rgba(27,58,107,.10);
+  background:#F5EDDC;
+}
+.preview-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:14px;
+}
+.preview-actions .btn{ padding:12px; font-size:12px; }
+
+/* progress */
+.progress{
+  margin-top:12px;
+  height:8px;
+  background:rgba(27,58,107,.10);
+  border-radius:999px;
+  overflow:hidden;
+  display:none;
+}
+.progress.show{ display:block; }
+.progress .bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--navy),var(--gold));
+  transition:width .25s;
+}
+
+/* toast */
+.toast{
+  position:fixed; left:50%; bottom:26px;
+  transform:translate(-50%, 30px);
+  background:var(--navy); color:var(--cream);
+  padding:12px 20px; border-radius:999px;
+  font-size:13px; font-weight:500;
+  box-shadow:var(--shadow-lg);
+  opacity:0; pointer-events:none;
+  transition:opacity .35s, transform .35s;
+  z-index:100;
+  border:1px solid rgba(242,194,0,.35);
+  text-align:center;
+  max-width:90vw;
+}
+.toast.show{ opacity:1; transform:translate(-50%,0); }
+
+/* loading */
+.loading{
+  position:fixed; inset:0;
+  background:rgba(26,26,46,.75);
+  z-index:200;
+  display:none;
+  place-items:center;
+  padding:20px;
+}
+.loading.show{ display:grid; }
+.loading-card{
+  background:var(--cream);
+  border-radius:20px;
+  padding:28px 32px;
+  text-align:center;
+  box-shadow:var(--shadow-lg);
+}
+.loading-card .spinner{
+  width:44px; height:44px;
+  border:4px solid rgba(27,58,107,.20);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  margin:0 auto 12px;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.loading-card p{
+  font-family:'Cinzel',serif;
+  font-weight:700;
+  color:var(--navy);
+  font-size:14px;
+  letter-spacing:.03em;
+}
+
+/* info note */
+.info-note{
+  background:linear-gradient(135deg, rgba(242,194,0,.10), rgba(27,58,107,.06));
+  border:1px dashed rgba(27,58,107,.25);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:11.5px;
+  color:var(--ink-soft);
+  line-height:1.55;
+  margin-top:12px;
+}
+.info-note code{
+  background:rgba(27,58,107,.08);
+  padding:1px 5px;
+  border-radius:4px;
+  font-family:monospace;
+  font-size:11px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-mark">QR</div>
+  <div class="h-title">
+    <h1>QR Poster Studio</h1>
+    <p>VAAN Consultancy · Client QR generator</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ LEFT PANEL ============ -->
+  <div>
+
+    <!-- 1. CLIENT -->
+    <section class="panel">
+      <div class="panel-title"><span class="num">1</span> Client</div>
+      <div class="client-list" id="clientList">
+        <div style="font-size:12px;color:#8a8a9a;">Loading clients…</div>
+      </div>
+      <div class="info-note">
+        Adding a client? Drop their logo + background into <code>assets/</code> and add an entry to <code>clients.json</code>. No code changes.
+      </div>
+    </section>
+
+    <!-- 2. URL & TABLE -->
+    <section class="panel">
+      <div class="panel-title"><span class="num">2</span> QR Details</div>
+      <div class="field">
+        <label>Base URL (table number appends to this)</label>
+        <input type="text" id="urlPattern" value="" />
+      </div>
+      <div class="field-row">
+        <div class="field" style="margin:0;">
+          <label>Table Number</label>
+          <input type="number" id="tableNumber" value="1" min="1" max="999" />
+        </div>
+        <div class="field" style="margin:0;">
+          <label>Table Label</label>
+          <input type="text" id="tableLabel" value="TABLE" />
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. POSTER TEXT -->
+    <section class="panel">
+      <div class="panel-title"><span class="num">3</span> Poster Text</div>
+      <div class="field">
+        <label>Brand Name</label>
+        <input type="text" id="brandName" value="" />
+      </div>
+      <div class="field">
+        <label>Pill 1 (top)</label>
+        <input type="text" id="pill1" value="Scan to See Menu" />
+      </div>
+      <div class="field">
+        <label>Pill 2 (bottom)</label>
+        <input type="text" id="pill2" value="Play Games & Win Prizes" />
+      </div>
+      <div class="field">
+        <label>Footer Text</label>
+        <input type="text" id="footerText" value="Powered by Vaan Consultancy" />
+      </div>
+    </section>
+
+    <!-- 4. BACKGROUND -->
+    <section class="panel">
+      <div class="panel-title"><span class="num">4</span> Background</div>
+      <div class="bg-grid" id="bgGrid"></div>
+      <label class="bg-upload-btn">
+        📤 Upload Custom Background
+        <input type="file" id="customBgInput" accept="image/*" />
+      </label>
+    </section>
+
+    <!-- 5. OPTIONS -->
+    <section class="panel">
+      <div class="panel-title"><span class="num">5</span> Options</div>
+      <div class="toggle-row">
+        <span>Show logo</span>
+        <div class="toggle-switch on" data-toggle="showLogo"></div>
+      </div>
+      <div class="toggle-row">
+        <span>Show brand name</span>
+        <div class="toggle-switch on" data-toggle="showBrand"></div>
+      </div>
+      <div class="toggle-row">
+        <span>Show "How to Order" box</span>
+        <div class="toggle-switch on" data-toggle="showHowTo"></div>
+      </div>
+      <div class="toggle-row">
+        <span>Show footer</span>
+        <div class="toggle-switch on" data-toggle="showFooter"></div>
+      </div>
+    </section>
+
+    <!-- 6. BULK -->
+    <section class="panel">
+      <div class="panel-title"><span class="num">6</span> Bulk Generate</div>
+      <div class="bulk-row">
+        <div class="field" style="margin:0;">
+          <label>From</label>
+          <input type="number" id="bulkFrom" value="1" min="1" max="999" />
+        </div>
+        <div class="field" style="margin:0;">
+          <label>To</label>
+          <input type="number" id="bulkTo" value="10" min="1" max="999" />
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-ghost" id="btnDownloadZip">📦 Download All as ZIP</button>
+      </div>
+      <div class="progress" id="progress"><div class="bar" id="progressBar"></div></div>
+    </section>
+
+  </div>
+
+  <!-- ============ RIGHT — PREVIEW ============ -->
+  <section class="preview-wrap">
+    <div class="preview-title">Live Preview</div>
+    <div class="preview-stage">
+      <canvas id="posterCanvas" width="1080" height="1920"></canvas>
+    </div>
+    <div class="preview-actions">
+      <button class="btn btn-primary" id="btnSaveCurrent">💾 Save PNG</button>
+      <button class="btn btn-ghost" id="btnOpenFull">🔍 Open Full</button>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+<div class="loading" id="loading"><div class="loading-card"><div class="spinner"></div><p id="loadingText">Generating…</p></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+/* ============================================================
+   QR POSTER STUDIO — VAAN
+   Generic client QR poster generator
+   ============================================================ */
+
+const POSTER_W = 1080;
+const POSTER_H = 1920;
+
+const $ = (id)=>document.getElementById(id);
+const canvas = $('posterCanvas');
+const ctx = canvas.getContext('2d');
+
+/* ---------- state ---------- */
+const state = {
+  clients: [],
+  currentClient: null,
+  bgImage: null,
+  logoImage: null,
+  showLogo: true,
+  showBrand: true,
+  showHowTo: true,
+  showFooter: true,
+  customBgDataUrl: null,
+  urlPattern: '',
+  lastFocusedInput: null
+};
+
+/* ---------- helpers ---------- */
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=> t.classList.remove('show'), 2400);
+}
+function showLoading(msg){
+  $('loadingText').textContent = msg || 'Generating…';
+  $('loading').classList.add('show');
+}
+function hideLoading(){ $('loading').classList.remove('show'); }
+function loadImage(src){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = ()=> resolve(img);
+    img.onerror = ()=> reject(new Error('Failed to load ' + src));
+    img.src = src;
+  });
+}
+function setProgress(pct){
+  const wrap = $('progress');
+  const bar = $('progressBar');
+  if (pct === 0){ wrap.classList.remove('show'); bar.style.width = '0%'; return; }
+  wrap.classList.add('show');
+  bar.style.width = pct + '%';
+}
+
+/* ============================================================
+   QR GENERATION
+   ============================================================ */
+function generateQR(url, size){
+  return new Promise((resolve)=>{
+    const temp = document.createElement('div');
+    temp.style.position = 'absolute';
+    temp.style.left = '-9999px';
+    document.body.appendChild(temp);
+
+    new QRCode(temp, {
+      text: url,
+      width: size,
+      height: size,
+      colorDark: '#000000',
+      colorLight: '#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    setTimeout(()=>{
+      const canvasEl = temp.querySelector('canvas');
+      const imgEl = temp.querySelector('img');
+      if (canvasEl){
+        const clone = document.createElement('canvas');
+        clone.width = canvasEl.width;
+        clone.height = canvasEl.height;
+        clone.getContext('2d').drawImage(canvasEl, 0, 0);
+        document.body.removeChild(temp);
+        resolve(clone);
+      } else if (imgEl){
+        const c = document.createElement('canvas');
+        c.width = size; c.height = size;
+        const cx = c.getContext('2d');
+        cx.drawImage(imgEl, 0, 0, size, size);
+        document.body.removeChild(temp);
+        resolve(c);
+      } else {
+        document.body.removeChild(temp);
+        resolve(null);
+      }
+    }, 120);
+  });
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+async function renderPoster(tableNumber){
+  const url = state.urlPattern + tableNumber;
+  const qrCanvas = await generateQR(url, 800);
+  if (!qrCanvas){ toast('QR generation failed'); return null; }
+
+  ctx.clearRect(0, 0, POSTER_W, POSTER_H);
+
+  /* background */
+  const bg = state.bgImage;
+  if (bg){
+    const bgAspect = bg.width / bg.height;
+    const canvasAspect = POSTER_W / POSTER_H;
+    let dw, dh, dx, dy;
+    if (bgAspect > canvasAspect){
+      dh = POSTER_H; dw = dh * bgAspect; dx = (POSTER_W - dw) / 2; dy = 0;
+    } else {
+      dw = POSTER_W; dh = dw / bgAspect; dx = 0; dy = (POSTER_H - dh) / 2;
+    }
+    ctx.drawImage(bg, dx, dy, dw, dh);
+  } else {
+    ctx.fillStyle = '#F5EDDC';
+    ctx.fillRect(0, 0, POSTER_W, POSTER_H);
+  }
+
+  /* inner card */
+  const panelX = 80, panelY = 180;
+  const panelW = POSTER_W - 160, panelH = POSTER_H - 360;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.15)';
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetY = 8;
+  ctx.fillStyle = 'rgba(255,250,240,0.94)';
+  roundRect(ctx, panelX, panelY, panelW, panelH, 32);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.strokeStyle = 'rgba(180,140,60,0.45)';
+  ctx.lineWidth = 2;
+  roundRect(ctx, panelX + 16, panelY + 16, panelW - 32, panelH - 32, 20);
+  ctx.stroke();
+
+  /* logo */
+  let cursorY = panelY + 60;
+  if (state.showLogo && state.logoImage){
+    const logo = state.logoImage;
+    const logoMaxW = 340, logoMaxH = 220;
+    const logoAspect = logo.width / logo.height;
+    let lw = logoMaxW;
+    let lh = lw / logoAspect;
+    if (lh > logoMaxH){ lh = logoMaxH; lw = lh * logoAspect; }
+    ctx.drawImage(logo, (POSTER_W - lw) / 2, cursorY, lw, lh);
+    cursorY += lh + 24;
+  }
+
+  /* brand name */
+  if (state.showBrand){
+    const brandName = $('brandName').value.trim();
+    if (brandName){
+      ctx.fillStyle = '#1B3A6B';
+      ctx.font = '800 54px Cinzel, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(brandName, POSTER_W / 2, cursorY);
+      cursorY += 74;
+    }
+  }
+
+  /* divider */
+  ctx.strokeStyle = 'rgba(180,140,60,0.7)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(POSTER_W / 2 - 180, cursorY);
+  ctx.lineTo(POSTER_W / 2 + 180, cursorY);
+  ctx.stroke();
+  cursorY += 36;
+
+  /* table number */
+  const tableLabel = $('tableLabel').value.trim() || 'TABLE';
+  ctx.fillStyle = '#8A6A00';
+  ctx.font = '700 22px Cinzel, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText((tableLabel + '   ' + tableNumber).toUpperCase(), POSTER_W / 2, cursorY);
+  cursorY += 48;
+
+  /* pills */
+  const pill1 = $('pill1').value.trim();
+  const pill2 = $('pill2').value.trim();
+  if (pill1){ cursorY = drawPill(pill1, cursorY, 34); cursorY += 12; }
+  if (pill2){ cursorY = drawPill(pill2, cursorY, 34); cursorY += 26; }
+
+  /* QR */
+  const qrSize = 560;
+  const qrX = (POSTER_W - qrSize) / 2;
+  const qrY = cursorY;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.18)';
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetY = 6;
+  ctx.fillStyle = '#FFFFFF';
+  roundRect(ctx, qrX - 20, qrY - 20, qrSize + 40, qrSize + 40, 20);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.strokeStyle = 'rgba(180,140,60,0.6)';
+  ctx.lineWidth = 3;
+  roundRect(ctx, qrX - 20, qrY - 20, qrSize + 40, qrSize + 40, 20);
+  ctx.stroke();
+
+  ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
+  cursorY = qrY + qrSize + 36;
+
+  /* how to order */
+  if (state.showHowTo){
+    const boxX = panelX + 40;
+    const boxW = panelW - 80;
+    const boxY = cursorY;
+    const boxH = 290;
+
+    ctx.fillStyle = '#1A1A2E';
+    roundRect(ctx, boxX, boxY, boxW, boxH, 18);
+    ctx.fill();
+
+    ctx.fillStyle = '#F2C200';
+    ctx.font = '800 28px Cinzel, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('HOW TO ORDER', POSTER_W / 2, boxY + 26);
+
+    ctx.fillStyle = '#FBF6EC';
+    ctx.font = '500 21px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    const steps = [
+      '1.  SCAN  →  See Menu',
+      '2.  Touch Any Item  →  Tap ADD',
+      '3.  Go to Cart',
+      '4.  Tap Order on WhatsApp (Verify Location)'
+    ];
+    let stepY = boxY + 88;
+    const stepX = boxX + 36;
+    steps.forEach(s=>{ ctx.fillText(s, stepX, stepY); stepY += 44; });
+  }
+
+  /* footer */
+  if (state.showFooter){
+    const footerText = $('footerText').value.trim();
+    if (footerText){
+      const footerY = panelY + panelH - 80;
+      const fw = panelW - 80;
+      const fx = (POSTER_W - fw) / 2;
+
+      ctx.fillStyle = '#FFFFFF';
+      roundRect(ctx, fx, footerY, fw, 60, 30);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(180,140,60,0.4)';
+      ctx.lineWidth = 2;
+      roundRect(ctx, fx, footerY, fw, 60, 30);
+      ctx.stroke();
+
+      ctx.fillStyle = '#1B3A6B';
+      ctx.font = '700 22px Cinzel, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(footerText, POSTER_W / 2, footerY + 30);
+    }
+  }
+
+  return canvas;
+}
+
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawPill(text, y, height){
+  const padding = 40;
+  ctx.font = '700 30px Cinzel, serif';
+  const textW = ctx.measureText(text).width;
+  const pillW = textW + padding * 2;
+  const pillX = (POSTER_W - pillW) / 2;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,.15)';
+  ctx.shadowBlur = 12;
+  ctx.shadowOffsetY = 4;
+  ctx.fillStyle = '#F2C200';
+  roundRect(ctx, pillX, y, pillW, height, height / 2);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.strokeStyle = 'rgba(140,100,0,0.5)';
+  ctx.lineWidth = 2;
+  roundRect(ctx, pillX, y, pillW, height, height / 2);
+  ctx.stroke();
+
+  ctx.fillStyle = '#3B1414';
+  ctx.font = '700 26px Cinzel, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, POSTER_W / 2, y + height / 2 + 2);
+  return y + height;
+}
+
+/* ============================================================
+   CLIENT LOADING — from clients.json
+   ============================================================ */
+async function loadClients(){
+  try{
+    const res = await fetch('clients.json?t=' + Date.now());
+    if (!res.ok) throw new Error('clients.json not found');
+    state.clients = await res.json();
+    renderClientList();
+  } catch(err){
+    console.error(err);
+    $('clientList').innerHTML = `<div style="font-size:12px;color:#D62828;">Failed to load clients.json — check the file exists.</div>`;
+  }
+}
+
+function renderClientList(){
+  const list = $('clientList');
+  list.innerHTML = '';
+  if (state.clients.length === 0){
+    list.innerHTML = `<div style="font-size:12px;color:#8a8a9a;">No clients in clients.json yet.</div>`;
+    return;
+  }
+  state.clients.forEach((c, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'client-btn' + (i === 0 ? ' selected' : '');
+    btn.innerHTML = `
+      <img class="cl-logo" src="${c.logo}" alt="" onerror="this.style.opacity=0.3"/>
+      <div class="cl-body">
+        <div class="cl-name">${c.name}</div>
+        <div class="cl-url">${c.url}</div>
+      </div>
+    `;
+    btn.addEventListener('click', ()=> selectClient(i));
+    list.appendChild(btn);
+  });
+
+  // auto-select first client
+  if (state.clients.length > 0){
+    selectClient(0);
+  }
+}
+
+async function selectClient(index){
+  const c = state.clients[index];
+  state.currentClient = c;
+
+  document.querySelectorAll('.client-btn').forEach((b, i)=>{
+    b.classList.toggle('selected', i === index);
+  });
+
+  // fill form fields
+  $('urlPattern').value = c.url || '';
+  $('brandName').value = c.brand || c.name || '';
+  $('footerText').value = c.footer || 'Powered by Vaan Consultancy';
+  state.urlPattern = c.url || '';
+
+  // load logo
+  try{
+    state.logoImage = await loadImage(c.logo);
+  } catch(e){
+    state.logoImage = null;
+    console.warn('Logo load failed:', c.logo);
+  }
+
+  // load bg
+  if (c.bg){
+    try{
+      state.bgImage = await loadImage(c.bg);
+      state.customBgDataUrl = null;
+    } catch(e){
+      state.bgImage = null;
+    }
+  } else {
+    state.bgImage = null;
+  }
+
+  // rebuild bg grid (show only this client's bg for now — can expand later)
+  renderBgGrid(c);
+
+  // render
+  await refreshPoster();
+}
+
+function renderBgGrid(client){
+  const grid = $('bgGrid');
+  grid.innerHTML = '';
+  if (!client.bg) return;
+
+  const div = document.createElement('div');
+  div.className = 'bg-option selected';
+  div.style.backgroundImage = `url('${client.bg}')`;
+  div.innerHTML = `<span class="bg-name">Default</span>`;
+  div.addEventListener('click', async ()=>{
+    document.querySelectorAll('.bg-option').forEach(o=> o.classList.remove('selected'));
+    div.classList.add('selected');
+    state.customBgDataUrl = null;
+    try{ state.bgImage = await loadImage(client.bg); } catch(e){ state.bgImage = null; }
+    refreshPoster();
+  });
+  grid.appendChild(div);
+}
+
+/* ============================================================
+   REFRESH
+   ============================================================ */
+async function refreshPoster(){
+  const tableNum = $('tableNumber').value || 1;
+  await renderPoster(tableNum);
+}
+let refreshTimer = null;
+function scheduleRefresh(){
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(refreshPoster, 250);
+}
+
+/* ============================================================
+   SAVE
+   ============================================================ */
+function saveCurrentPNG(){
+  const tableNum = $('tableNumber').value || 1;
+  const clientSlug = (state.currentClient?.name || 'qr').toLowerCase().replace(/\s+/g, '-');
+  const link = document.createElement('a');
+  link.download = `${clientSlug}-table-${tableNum}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  toast('✅ Poster saved');
+}
+
+/* ============================================================
+   BULK ZIP
+   ============================================================ */
+async function bulkZip(){
+  const from = parseInt($('bulkFrom').value) || 1;
+  const to = parseInt($('bulkTo').value) || 10;
+  if (to < from){ toast('"To" must be ≥ "From"'); return; }
+  const count = to - from + 1;
+  if (count > 200){ toast('Max 200 at a time'); return; }
+
+  const zip = new JSZip();
+  showLoading(`Generating ${count} posters…`);
+
+  try{
+    const clientSlug = (state.currentClient?.name || 'qr').toLowerCase().replace(/\s+/g, '-');
+    for (let i = 0; i < count; i++){
+      const tableNum = from + i;
+      setProgress(Math.round((i / count) * 100));
+      $('tableNumber').value = tableNum;
+      await renderPoster(tableNum);
+      const blob = await new Promise(resolve=> canvas.toBlob(resolve, 'image/png'));
+      zip.file(`${clientSlug}-table-${tableNum}.png`, blob);
+    }
+    setProgress(100);
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const link = document.createElement('a');
+    link.download = `${clientSlug}-qr-${from}-to-${to}.zip`;
+    link.href = URL.createObjectURL(zipBlob);
+    link.click();
+    toast(`✅ ${count} posters zipped`);
+  } catch(err){
+    toast('❌ Bulk generation failed');
+    console.error(err);
+  } finally {
+    hideLoading();
+    setTimeout(()=> setProgress(0), 800);
+    refreshPoster();
+  }
+}
+
+/* ============================================================
+   CUSTOM BG UPLOAD
+   ============================================================ */
+$('customBgInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (ev)=>{
+    state.bgImage = await loadImage(ev.target.result);
+    document.querySelectorAll('.bg-option').forEach(o=> o.classList.remove('selected'));
+    state.customBgDataUrl = ev.target.result;
+    await refreshPoster();
+    toast('✅ Custom background loaded');
+  };
+  reader.readAsDataURL(file);
+});
+
+/* ============================================================
+   TOGGLES
+   ============================================================ */
+document.querySelectorAll('.toggle-switch').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    t.classList.toggle('on');
+    state[t.dataset.toggle] = t.classList.contains('on');
+    refreshPoster();
+  });
+});
+
+/* ============================================================
+   INPUT BINDINGS
+   ============================================================ */
+['urlPattern','tableNumber','tableLabel','brandName','pill1','pill2','footerText'].forEach(id=>{
+  $(id).addEventListener('input', ()=>{
+    if (id === 'urlPattern') state.urlPattern = $(id).value;
+    scheduleRefresh();
+  });
+});
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+$('btnSaveCurrent').addEventListener('click', saveCurrentPNG);
+$('btnDownloadZip').addEventListener('click', bulkZip);
+$('btnOpenFull').addEventListener('click', ()=>{
+  const w = window.open();
+  w.document.write(`<img src="${canvas.toDataURL('image/png')}" style="max-width:100%;display:block;margin:0 auto;" />`);
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init(){
+  showLoading('Loading…');
+  await loadClients();
+  hideLoading();
+})();
+</script>
+
+</body>
+</html>
